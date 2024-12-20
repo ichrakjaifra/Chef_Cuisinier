@@ -33,7 +33,7 @@
             <i class="fa-solid fa-magnifying-glass searchicon"></i>
           </div>
 
-          <a href="sign_in.php" id="openModal">
+          <a href="sign_inn.php" id="openModal">
             <li>
               <i class="fa-solid fa-user" id="user-lap"></i>
             </li>
@@ -103,7 +103,7 @@
           <i class="fa-solid fa-magnifying-glass searchicon"></i>
         </div>
 
-        <a href="sign_in.php" id="openModal">
+        <a href="sign_inn.php" id="openModal">
           <li>
             <i class="fa-solid fa-user" id="user-lap"></i>
           </li>

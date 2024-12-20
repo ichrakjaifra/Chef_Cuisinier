@@ -1,3 +1,30 @@
+<?php
+include('connexion.php');
+$action = false;
+if (isset($_POST['Ajouter'])) {
+  $titre = $_POST['titre'];
+  $description = $_POST['description'];
+  $image_path = $_FILES['image_path']['name'];
+  $destination = 'img/' . $image_path;
+  $imagePath = pathinfo($destination, PATHINFO_EXTENSION);
+  $valid_extension = array('png', 'jpg', 'jpeg', 'gif', 'svg');
+
+  if (in_array(strtolower($imagePath), $valid_extension)) {
+      move_uploaded_file($_FILES['image_path']['tmp_name'], $destination);
+
+      $stmt = $conn->prepare("INSERT INTO `menu`(`titre`, `description`, `image_path`) VALUES (?, ?, ?)");
+      $stmt->bind_param("sss", $titre, $description, $image_path);
+      $stmt->execute();
+      $stmt->close();
+  } else {
+      echo "Extension de fichier invalide.";
+  }
+}
+
+$sql = "SELECT * FROM menu";
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +35,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Fodd website | Home</title>
 </head>
 <body>
@@ -70,16 +98,16 @@
 
     <div class="nav">
       <ul>
-        <a href="cients.html">
+        <a href="cients.php">
           <li>Clients</li>
         </a>
-        <a href="reservations.html">
+        <a href="reservations.php">
           <li>Reservations</li>
         </a>
-        <a href="menus.html">
+        <a href="menus.php">
           <li>Menus</li>
         </a>
-        <a href="plats.html">
+        <a href="plats.php">
           <li>Plats</li>
         </a>
       </ul>
@@ -116,7 +144,7 @@
 
   <div class="container">
     <div class="text-right">
-        <a href="nouveau_client.php" class="btn">
+        <a href="nouveau_menu.php" class="btn">
             <i class="glyphicon glyphicon-plus"></i> Nouvelle menu
         </a>
     </div>
@@ -126,7 +154,7 @@
     <div class="panel">
         <div class="panel-heading">Liste des menus</div>
         <div class="panel-body">
-            <div class="table-responsive">
+            <div class="table-responsive" style="overflow-x: auto;">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -138,6 +166,38 @@
                         </tr>
                     </thead>
                     <tbody>
+
+<?php
+        if ($result->num_rows > 0) {
+            while ($menu = $result->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . htmlspecialchars($menu['id_menu']) . "</td>";
+                echo "<td>" . htmlspecialchars($menu['titre']) . "</td>";
+                echo "<td>" . htmlspecialchars($menu['description']) . "</td>";
+                echo "<td><img src='img/" . htmlspecialchars($menu['image_path']) . "' alt='Image' style='max-width: 80px; max-height: 80px; width: auto; height: auto;'></td>";
+
+                // echo "<td>
+                //         <a href='edit_menu.php?id=" . htmlspecialchars($menu['id_menu']) . "'>Modifier</a> |
+                //         <a href='delete_menu.php?id=" . htmlspecialchars($menu['id_menu']) . "'>Supprimer</a>
+                //       </td>";
+                // echo "</tr>";
+                echo "<td>
+                <a href='edit_menu.php?id=" . htmlspecialchars($menu['id_menu']) . "' class='btn btn-warning' style='color: white; margin-right: 10px;'>
+                    <i class='fas fa-edit'></i>
+                </a>
+                <a href='delete_menu.php?id=" . htmlspecialchars($menu['id_menu']) . "' class='btn btn-danger' style='color: white;'>
+                    <i class='fas fa-trash-alt'></i>
+                </a>
+              </td>";
+        echo "</tr>";
+        
+
+            }
+        } else {
+            echo "<tr><td colspan='5'>Aucun menu trouvé.</td></tr>";
+        }
+        ?>
+
                         
                     </tbody>
                 </table>

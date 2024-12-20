@@ -1,3 +1,11 @@
+<?php
+include('connexion.php');
+
+// Requête pour récupérer les données du menu
+$query = "SELECT * FROM menu";  // Adapte le nom de la table et les colonnes
+$result = $conn->query($query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,7 +123,7 @@
   </div>
   </header>
 
-  <div class="menu">
+  <!-- <div class="menu">
     <div class="headling">
       <h1>menu</h1>
     </div>
@@ -156,6 +164,45 @@
       <button>Reservation</button>
     </div>
   </div>
+  </div> -->
+
+  <div class="menu">
+    <div class="headling">
+      <h1>Menu</h1>
+    </div>
+
+    <?php
+    if ($result->num_rows > 0) {
+        
+        while($row = $result->fetch_assoc()) {
+            // Récupère les informations du menu
+            $titre = $row['titre'];         
+            $description = $row['description']; 
+            $image_path = $row['image_path'];        
+            ?>
+            
+            <div class="food-items-menu">
+                <img src="img/<?php echo $image_path; ?>" alt="<?php echo $titre; ?>">
+                <div class="details">
+                    <div class="details-sub">
+                        <h5><?php echo $titre; ?></h5>
+                
+                        <h5 class="price">$9</h5>
+                    </div>
+                    <p><?php echo $description; ?></p>
+                    <button>Reservation</button>
+                </div>
+            </div>
+            <?php
+        }
+    } else {
+        echo "Aucun plat trouvé.";
+    }
+
+    // Ferme la connexion
+    $conn->close();
+    ?>
+    
   </div>
 
   <div class="footer">

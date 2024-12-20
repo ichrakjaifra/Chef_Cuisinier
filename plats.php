@@ -1,3 +1,13 @@
+<?php 
+include('connexion.php');
+$title="Ajouter";
+$categorie="";
+$description="";
+$image_path="";
+$btn_title="Ajouter";
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,7 +126,7 @@
 
   <div class="container">
     <div class="text-right">
-        <a href="nouveau_client.php" class="btn">
+        <a href="nouveau_plat.php" class="btn">
             <i class="glyphicon glyphicon-plus"></i> Nouvelle plat
         </a>
     </div>

@@ -1,16 +1,12 @@
-<?php
+<?php 
 include('connexion.php');
+$title="Ajouter";
+$titre="";
+$description="";
+$id_menu="";
+$image_path="";
+$btn_title="Ajouter";
 
-
-// session_start();
-// if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
-//     header("Location: sign_inn.php"); 
-//     exit();
-// }
-
-
-$sql = "SELECT * FROM user WHERE id_role = 2"; 
-$result = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -129,81 +125,51 @@ $result = mysqli_query($conn, $sql);
   </div>
   </header>
 
-  <div class="container">
-    <div class="text-right">
-        <a href="nouveau_client.php" class="btn">
-            <i class="glyphicon glyphicon-plus"></i> Nouvelle client
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="panel">
-        <div class="panel-heading">Liste des clients</div>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Id client</th>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Email</th>
-                            <th>Password</th>
-                            <th>Téléphone</th>
-                            <th>Adresse</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        // Affichage des clients
-                        if (mysqli_num_rows($result) > 0) {
-                            while ($client = mysqli_fetch_assoc($result)) {
-                                echo "<tr>";
-                                echo "<td>" . $client['id_user'] . "</td>";
-                                echo "<td>" . $client['nom'] . "</td>";
-                                echo "<td>" . $client['pernom'] . "</td>";
-                                echo "<td>" . $client['email'] . "</td>";
-                                echo "<td>" . $client['password'] . "</td>";
-                                echo "<td>" . $client['telephone'] . "</td>";
-                                echo "<td>" . $client['adresse'] . "</td>";
-                                echo "<td><a href='edit_client.php?id=" . $client['id_user'] . "'>Modifier</a> | <a href='delete_client.php?id=" . $client['id_user'] . "'>Supprimer</a></td>";
-                                echo "</tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='8'>Aucun client trouvé.</td></tr>";
-                        }
-                        ?>
-                        
-                    </tbody>
-                </table>
-            </div>
+  <div class="container" style="margin-top: 80px;">
+  <div class="panel panel-primary">
+    <div class="panel-heading text-center"><?php echo $title; ?> un Nouveau Plat</div>
+    <div class="panel-body">
+      <form action="plats.php" method="POST">
+      
+      <div class="form-group">
+          <label for="titre">Categorie :</label>
+          <input type="text" class="form-control" name="categorie" value="<?php echo $categorie; ?>" placeholder="Entrez categorie" autocomplete="false">
+          <div class="form-group">
+          <div class="form-group">
+          <label for="description">Description :</label>
+          <textarea class="form-control" name="description" rows="3" placeholder="Entrez description"><?php echo $description; ?></textarea>
         </div>
-    </div>
-</div>
 
-  <div class="footer">
-    <div class="footer-1">
-      <div class="logo">
-        <img src="images/official logo wide.png" alt="">
-      </div>
-      <div>
-        <address>
-          <p>Email: exampleemail@gmail.com</p>
-          <p>Youtube: Chef Cuisinier</p>
-          <br>Mr. exemple 123,</br> YouCode, Safi </br> Maroc</p>
-        </address>
-      </div>
-    </div>
+        <div class="form-group">
+          <label for="id_menu">Id menu :</label>
+          <select name="id_menu" id="id_menu" class="form-control" required>
+                        <option value="">-- Sélectionnez un menu --</option>
+                        
+                    </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="image_path">Image :</label>
+          <input type="file" name="image_path" id="image_path" class="form-control" value="<?php echo $image_path; ?>">
+        </div>
+        
 
-    <div class="footer-2">
-      <img src="images/logo1.jpg" alt="">
-      <h2>Powerd by <em>Ichrak Jaifra</em></h2>
+        <?php
+
+        if (isset($_GET['id_plat'])){?>
+
+           <input type="hidden" name="" value="<?php echo $_GET['id_plat'] ?>">
+
+       <?php   }  
+       
+       ?>
+
+        <input type="submit" class="btn btn-primary" value="<?php echo $btn_title; ?>" name="Ajouter">
+        <a href="menus.php" class="btn btn-default">Retour</a>
+      </form>
     </div>
   </div>
+</div>
 
-  <script src="app.js"></script>
-
-  </body>
-  </html>
+</body>
+</html>

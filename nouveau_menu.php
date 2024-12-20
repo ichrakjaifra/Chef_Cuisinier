@@ -1,16 +1,33 @@
-<?php
+<?php 
 include('connexion.php');
+$title = "Ajouter";
+$titre = "";
+$description = "";
+$image_path = "";
+$btn_title = "Ajouter";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $titre = $_POST['titre'];
+    $description = $_POST['description'];
+    $image_path = $_FILES['image_path']['name'];
+    $destination = 'img/' . $image_path;
+    $imagePath = pathinfo($destination, PATHINFO_EXTENSION);
+    $valid_extension = array('png', 'jpg', 'jpeg', 'gif', 'svg');
 
-// session_start();
-// if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
-//     header("Location: sign_inn.php"); 
-//     exit();
-// }
+    if (in_array(strtolower($imagePath), $valid_extension)) {
+        move_uploaded_file($_FILES['image_path']['tmp_name'], $destination);
 
+        $stmt = $conn->prepare("INSERT INTO `menu`(`titre`, `description`, `image_path`) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $titre, $description, $image_path);
+        $stmt->execute();
+        $stmt->close();
 
-$sql = "SELECT * FROM user WHERE id_role = 2"; 
-$result = mysqli_query($conn, $sql);
+        header("Location: menu.php");
+        exit();
+    } else {
+        echo "Extension de fichier invalide.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -129,61 +146,44 @@ $result = mysqli_query($conn, $sql);
   </div>
   </header>
 
-  <div class="container">
-    <div class="text-right">
-        <a href="nouveau_client.php" class="btn">
-            <i class="glyphicon glyphicon-plus"></i> Nouvelle client
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="panel">
-        <div class="panel-heading">Liste des clients</div>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Id client</th>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Email</th>
-                            <th>Password</th>
-                            <th>Téléphone</th>
-                            <th>Adresse</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        // Affichage des clients
-                        if (mysqli_num_rows($result) > 0) {
-                            while ($client = mysqli_fetch_assoc($result)) {
-                                echo "<tr>";
-                                echo "<td>" . $client['id_user'] . "</td>";
-                                echo "<td>" . $client['nom'] . "</td>";
-                                echo "<td>" . $client['pernom'] . "</td>";
-                                echo "<td>" . $client['email'] . "</td>";
-                                echo "<td>" . $client['password'] . "</td>";
-                                echo "<td>" . $client['telephone'] . "</td>";
-                                echo "<td>" . $client['adresse'] . "</td>";
-                                echo "<td><a href='edit_client.php?id=" . $client['id_user'] . "'>Modifier</a> | <a href='delete_client.php?id=" . $client['id_user'] . "'>Supprimer</a></td>";
-                                echo "</tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='8'>Aucun client trouvé.</td></tr>";
-                        }
-                        ?>
-                        
-                    </tbody>
-                </table>
-            </div>
+  <div class="container" style="margin-top: 80px;">
+  <div class="panel panel-primary">
+    <div class="panel-heading text-center"><?php echo $title; ?> un Nouveau Menu</div>
+    <div class="panel-body">
+      <form action="menus.php" method="POST" enctype="multipart/form-data">
+      
+      <div class="form-group custom-form-group">
+          <label for="titre">Titre :</label>
+          <input type="text" class="form-control" name="titre" value="<?php echo $titre; ?>" placeholder="Entrez le titre" autocomplete="false">
+          <div class="form-group custom-form-group">
+          <label for="description">Description :</label>
+          <textarea class="form-control" name="description" rows="3" placeholder="Entrez description"><?php echo $description; ?></textarea>
         </div>
+        
+        <div class="form-group custom-form-group">
+          <label for="image_path">Image :</label>
+          <input type="file" name="image_path" id="image_path" class="form-control" value="<?php echo $image_path; ?>">
+        </div>
+        
+
+        <?php
+
+        if (isset($_GET['id_menu'])){?>
+
+           <input type="hidden" name="" value="<?php echo $_GET['id_menu'] ?>">
+
+       <?php   }  
+       
+       ?>
+
+        <input type="submit" class="btn btn-primary" value="<?php echo $btn_title; ?>" name="Ajouter">
+        <a href="menus.php" class="btn btn-default">Retour</a>
+      </form>
     </div>
+  </div>
 </div>
 
-  <div class="footer">
+  <!-- <div class="footer">
     <div class="footer-1">
       <div class="logo">
         <img src="images/official logo wide.png" alt="">
@@ -201,7 +201,7 @@ $result = mysqli_query($conn, $sql);
       <img src="images/logo1.jpg" alt="">
       <h2>Powerd by <em>Ichrak Jaifra</em></h2>
     </div>
-  </div>
+  </div> -->
 
   <script src="app.js"></script>
 

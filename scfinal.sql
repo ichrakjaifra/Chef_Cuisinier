@@ -50,3 +50,18 @@ CREATE TABLE plat (
     prix DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (id_menu) REFERENCES menu(id_menu)
 );
+
+CREATE TABLE menu_palt(
+   id_menu INT(11),
+   id_plat INT(11),
+   FOREIGN KEY (id_menu) REFERENCES  MENU(id_menu),
+   FOREIGN KEY (id_plat) REFERENCES  plate(id_plat),
+   constraint primary key(id_menu,id_plat)
+);
+
+insert into user(nom,pernom,email,password,telephone,adresse,id_role)
+values("chef","ichrak","ichrak@gmail.com","$2y$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","06123456789","youcode",1);
+
+
+alter table user 
+modify password VARCHAR(255);
